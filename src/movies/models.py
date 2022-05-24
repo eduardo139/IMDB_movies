@@ -46,11 +46,11 @@ class Strategy(ABC):
 
 class ConcreteStrategyDescending(Strategy):
     def sortList(self, data: List) -> List:
-        return sorted(data, key=super().compareRatings, reverse=True)
+        return sorted(data, key=super().compareRatings, reverse=True)[0:10]
 
 class ConcreteStrategyAscending(Strategy):
     def sortList(self, data: List) -> List:
-        return sorted(data, key=super().compareRatings)
+        return sorted(data, key=super().compareRatings)[0:10]
 """ END of design pattern 1: Strategy """
 
 

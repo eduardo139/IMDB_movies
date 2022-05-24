@@ -5,11 +5,6 @@ from movie_fetcher import getRecs
 app = Flask(__name__)
 models.start_mappers()
 
-@app.route("/hello", methods=["GET"])
-def hello_world():
-    return "Hello World!", 200
-
-""" Stuff I added """
 @app.route('/form')
 def form():
     return render_template('form.html')
@@ -17,7 +12,7 @@ def form():
 @app.route('/data/', methods = ['POST', 'GET'])
 def data():
     if request.method == 'GET':
-        return f"The URL /data is accessed directly. Try going to '/form' to submit form"
+        return f"The URL /data is accessed directly. Try going to '/form' to submit the required info first."
     if request.method == 'POST':
         director = models.Director()
         builder = models.ConcreteBuilder()
@@ -38,4 +33,3 @@ def ascendingRecs(preference_key):
     context = models.Context(models.ConcreteStrategyAscending())
     sortedList = context.sortAccordingToStrategy(movieList)
     return render_template('movies.html', movielist = sortedList)
-""" END Stuff I added """
