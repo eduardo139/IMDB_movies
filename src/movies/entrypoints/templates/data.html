@@ -1,4 +1,4 @@
-<h1>Hello {{form_data.get("Email")}}</h1>
-<p>Your preference key is {{pref_key}}</p>
-<a href="/descendingRecs/{{pref_key}}">Get movie recommendations</a> 
-<a href="/ascendingRecs/{{pref_key}}">Get movie recommendations in ascending order</a>
+<h1>Hello {{user_info.parts[1]}}</h1>
+<p>Your preference key is {{user_info.parts[2]}}</p>
+<a href="/descendingRecs/{{user_info.parts[2]}}">Get movie recommendations</a> 
+<a href="/ascendingRecs/{{user_info.parts[2]}}">Get movie recommendations in ascending order</a>

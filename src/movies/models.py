@@ -15,18 +15,47 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.declarative import declarative_base
 
-""" Stuff I added """
-
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
+
+""" START of design pattern 1: Strategy """
+class Context():
+    def __init__(self, strategy: Strategy) -> None:
+        self._strategy = strategy
+
+    @property
+    def strategy(self) -> Strategy:
+        return self._strategy
+
+    @strategy.setter
+    def strategy(self, strategy: Strategy) -> None:
+        self._strategy = strategy
+
+    def sortAccordingToStrategy(self, data: List) -> List:
+        result = self._strategy.sortList(data)
+        return result
 
 
+class Strategy(ABC):
+    @abstractmethod
+    def sortList(self, data: List):
+        pass
+
+    def compareRatings(self, movie):
+        return movie.get("rating")
+
+class ConcreteStrategyDescending(Strategy):
+    def sortList(self, data: List) -> List:
+        return sorted(data, key=super().compareRatings, reverse=True)
+
+class ConcreteStrategyAscending(Strategy):
+    def sortList(self, data: List) -> List:
+        return sorted(data, key=super().compareRatings)
+""" END of design pattern 1: Strategy """
+
+
+""" START of design pattern 2: Builder """
 class Builder(ABC):
-    """
-    The Builder interface specifies methods for creating the different parts of
-    the user objects.
-    """
-
     @property
     @abstractmethod
     def user(self) -> None:
@@ -45,18 +74,8 @@ class Builder(ABC):
         pass
 
 
-class ConcreteBuilder1(Builder):
-    """
-    The Concrete Builder classes follow the Builder interface and provide
-    specific implementations of the building steps. Your program may have
-    several variations of Builders, implemented differently.
-    """
-
+class ConcreteBuilder(Builder):
     def __init__(self) -> None:
-        """
-        A fresh builder instance should contain a blank user object, which is
-        used in further assembly.
-        """
         self.reset()
 
     def reset(self) -> None:
@@ -64,20 +83,6 @@ class ConcreteBuilder1(Builder):
 
     @property
     def user(self) -> user:
-        """
-        Concrete Builders are supposed to provide their own methods for
-        retrieving results. That's because various types of builders may create
-        entirely different users that don't follow the same interface.
-        Therefore, such methods cannot be declared in the base Builder interface
-        (at least in a statically typed programming language).
-
-        Usually, after returning the end result to the client, a builder
-        instance is expected to be ready to start producing another user.
-        That's why it's a usual practice to call the reset method at the end of
-        the `getuser` method body. However, this behavior is not mandatory,
-        and you can make your builders wait for an explicit reset call from the
-        client code before disposing of the previous result.
-        """
         user = self._user
         self.reset()
         return user
@@ -88,38 +93,19 @@ class ConcreteBuilder1(Builder):
     def add_email(self, email) -> None:
         self._user.add(email)
 
-    def add_pref_key(self, pref_key) -> None:
-        self._user.add(pref_key)
+    def add_pref_key(self, interestList: List) -> None:
+        preference_key = str((int(interestList[0]) + int(interestList[1]) + int(interestList[2])) % 4 + 1)
+        self._user.add(preference_key)
 
 
 class user():
-    """
-    It makes sense to use the Builder pattern only when your users are quite
-    complex and require extensive configuration.
-
-    Unlike in other creational patterns, different concrete builders can produce
-    unrelated users. In other words, results of various builders may not
-    always follow the same interface.
-    """
-
     def __init__(self) -> None:
         self.parts = []
 
     def add(self, part: Any) -> None:
         self.parts.append(part)
 
-    def list_parts(self) -> None:
-        print(f"user parts: {', '.join(self.parts)}", end="")
-
-
 class Director:
-    """
-    The Director is only responsible for executing the building steps in a
-    particular sequence. It is helpful when producing users according to a
-    specific order or configuration. Strictly speaking, the Director class is
-    optional, since the client can control builders directly.
-    """
-
     def __init__(self) -> None:
         self._builder = None
 
@@ -129,23 +115,13 @@ class Director:
 
     @builder.setter
     def builder(self, builder: Builder) -> None:
-        """
-        The Director works with any builder instance that the client code passes
-        to it. This way, the client code may alter the final type of the newly
-        assembled user.
-        """
         self._builder = builder
 
-    """
-    The Director can construct several user variations using the same
-    building steps.
-    """
-
-    def build_full_featured_user(self) -> None:
-        self.builder.add_password("pass1")
-        self.builder.add_email("here@this.com")
-        self.builder.add_pref_key("1")
-""" END Stuff I added"""
+    def buildUser(self, email, password, interestList) -> None:
+        self.builder.add_password(password)
+        self.builder.add_email(email)
+        self.builder.add_pref_key(interestList)
+""" END of design pattern 2: Builder """
 
 
 def get_postgres_uri():

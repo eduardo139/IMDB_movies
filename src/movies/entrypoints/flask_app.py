@@ -19,40 +19,23 @@ def data():
     if request.method == 'GET':
         return f"The URL /data is accessed directly. Try going to '/form' to submit form"
     if request.method == 'POST':
-        form_data = request.form
-        interestList = request.form.getlist("interest")
-
-        preference_key = (int(interestList[0]) + int(interestList[1]) + int(interestList[2])) % 4 + 1
-
-        return render_template('data.html',form_data = form_data, pref_key = preference_key)
-
-def compareRatings(movie):
-    return movie.get("rating")
+        director = models.Director()
+        builder = models.ConcreteBuilder()
+        director.builder = builder
+        director.buildUser(request.form.get("Email"), request.form.get("Password"), request.form.getlist("interest"))
+        return render_template('data.html', user_info = builder.user)
 
 @app.route('/descendingRecs/<preference_key>')
 def descendingRecs(preference_key):
     movieList = getRecs(preference_key)
-    movieList.sort(key=compareRatings, reverse=True)
-    return render_template('movies.html', movielist = movieList)
+    context = models.Context(models.ConcreteStrategyDescending())
+    sortedList = context.sortAccordingToStrategy(movieList)
+    return render_template('movies.html', movielist = sortedList)
 
 @app.route('/ascendingRecs/<preference_key>')
 def ascendingRecs(preference_key):
     movieList = getRecs(preference_key)
-    movieList.sort(key=compareRatings)
-    return render_template('movies.html', movielist = movieList)
-
-@app.route("/proy", methods=["GET"])
-def project_init():
-    """
-    The client code creates a builder object, passes it to the director and then
-    initiates the construction process. The end result is retrieved from the
-    builder object.
-    """
-    director = models.Director()
-    builder = models.ConcreteBuilder1()
-    director.builder = builder
-
-    director.build_full_featured_user()
-    builder.user.list_parts()
-    return ("")
+    context = models.Context(models.ConcreteStrategyAscending())
+    sortedList = context.sortAccordingToStrategy(movieList)
+    return render_template('movies.html', movielist = sortedList)
 """ END Stuff I added """
