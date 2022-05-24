@@ -16,7 +16,7 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
 session = DEFAULT_SESSION_FACTORY()
 
 
-def main():
+def getRecs(preference_key):
     # Downloading imdb top 250 movie's data
     url = 'http://www.imdb.com/chart/top'
     response = requests.get(url)
@@ -51,7 +51,9 @@ def main():
                 "vote": votes[index],
                 "link": links[index],
                 "preference_key": index % 4 + 1}
-        list.append(data)
+        if data["preference_key"] == int(preference_key):
+            list.append(data)
+    return list
 
     fields = ["preference_key", "movie_title", "star_cast", "rating", "year", "place", "vote", "link"]
     with open("movie_results.csv", "w", newline="") as file:
@@ -61,4 +63,4 @@ def main():
             writer.writerow({**movie})
 
 if __name__ == '__main__':
-    main()
+    getRecs()

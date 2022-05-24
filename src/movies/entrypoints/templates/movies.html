@@ -1,0 +1,14 @@
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Year</th>
+        <th>Rating</th>
+    </tr>
+    {% for movie in movielist %}
+    <tr>
+        <td>{{movie.movie_title}}</td>
+        <td>{{movie.year}}</td>
+        <td>{{movie.rating}}</td>
+    </tr>
+    {% endfor %}
+</table>
