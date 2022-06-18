@@ -19,6 +19,13 @@ from abc import ABC, abstractmethod
 from typing import Any, List
 
 """ START of design pattern 1: Strategy """
+""" 
+  SOLID Pattern #1: Dependency Inversion Principle (DIP)
+  - This principle is applied here in the Strategy Pattern because the high level
+    module (Context) does not depend on something concrete. Instead, it depends on
+    an abstraction (Strategy).
+  - The reason it is implemented here is to make the code more flexible and reusable.
+"""
 class Context():
     def __init__(self, strategy: Strategy) -> None:
         self._strategy = strategy
@@ -44,6 +51,14 @@ class Strategy(ABC):
     def compareRatings(self, movie):
         return movie.get("rating")
 
+""" 
+  SOLID Pattern #2: Open Closed Principle (OCP)
+  - This principle is applied by using the Strategy Pattern, because it allows
+    the functionality to be extendable (by adding new ConcreteStrategy classes), 
+    without needing to modify already existing code.
+  - The reason it is implemented here is to avoid changing the main logic part
+    of the code, and to easily allow new sorting strategies to be added.
+"""
 class ConcreteStrategyDescending(Strategy):
     def sortList(self, data: List) -> List:
         return sorted(data, key=super().compareRatings, reverse=True)[0:10]
