@@ -18,9 +18,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from abc import ABC, abstractmethod
 from typing import Any, List
 
+""" 
+  SOLID Pattern: Single Responsibility Principle (SRP)
+  - This principle is applied throughout the classes because they were built to solve a
+    specific problem. They are cohesive and are not used by different actors to do different
+    things.
+  - Applying this principle makes the code easier to maintain and test.
+"""
+
 """ START of design pattern 1: Strategy """
 """ 
-  SOLID Pattern #1: Dependency Inversion Principle (DIP)
+  SOLID Pattern: Dependency Inversion Principle (DIP)
   - This principle is applied here in the Strategy Pattern because the high level
     module (Context) does not depend on something concrete. Instead, it depends on
     an abstraction (Strategy).
@@ -52,7 +60,7 @@ class Strategy(ABC):
         return movie.get("rating")
 
 """ 
-  SOLID Pattern #2: Open Closed Principle (OCP)
+  SOLID Pattern: Open Closed Principle (OCP)
   - This principle is applied by using the Strategy Pattern, because it allows
     the functionality to be extendable (by adding new ConcreteStrategy classes), 
     without needing to modify already existing code.
